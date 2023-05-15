@@ -13,4 +13,5 @@ on:
 
 jobs:
   workflows:
+    name: CI
     uses: hassio-addons/workflows/.github/workflows/addon-ci.yaml@main

@@ -9,4 +9,5 @@ on:
 
 jobs:
   workflows:
+    name: Release Drafter
     uses: hassio-addons/workflows/.github/workflows/release-drafter.yaml@main

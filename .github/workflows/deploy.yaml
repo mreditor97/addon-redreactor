@@ -14,6 +14,7 @@ on:
 
 jobs:
   workflows:
+    name: Add-on Deploy
     uses: hassio-addons/workflows/.github/workflows/addon-deploy.yaml@main
     with:
       slug: 'addon-redreactor'
