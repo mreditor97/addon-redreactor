@@ -61,11 +61,11 @@ LABEL \
     io.hass.arch="${BUILD_ARCH}" \
     io.hass.type="addon" \
     io.hass.version=${BUILD_VERSION} \
-    maintainer="MrEditor97" \
+    maintainer="MrEditor97 <info@mreditor97.co.uk>" \
     org.opencontainers.image.title="${BUILD_NAME}" \
     org.opencontainers.image.description="${BUILD_DESCRIPTION}" \
     org.opencontainers.image.vendor="Home Assistant Add-ons" \
-    org.opencontainers.image.authors="MrEditor97" \
+    org.opencontainers.image.authors="MrEditor97 <info@mreditor97.co.uk>" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.url="https://github.com/mreditor97/homeassistant-addons" \
     org.opencontainers.image.source="https://github.com/${BUILD_REPOSITORY}" \
