@@ -26,8 +26,8 @@ RUN \
     && git clone --branch "${REDREACTOR_VERSION}" --single-branch --depth 1 \
         https://github.com/mreditor97/redreactor /tmp/redreactor \
     \
-    && pip install --no-cache-dir -r /tmp/requirements.txt \
-    && pip install /tmp/redreactor \
+    && pip3 install --no-cache-dir -r /tmp/requirements.txt \
+    && pip3 install /tmp/redreactor \
     \
     && curl -L -s -o /usr/bin/ha \
         "https://github.com/home-assistant/cli/releases/download/${HA_CLI_VERSION}/ha_${BUILD_ARCH}" \
