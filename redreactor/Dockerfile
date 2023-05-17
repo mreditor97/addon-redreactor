@@ -22,11 +22,11 @@ RUN \
         git=2.38.5-r0 \
     \
     && git clone --branch "${REDREACTOR_VERSION}" --single-branch --depth 1 \
-        https://github.com/mreditor97/redreactor /var/redreactor \
+        https://github.com/mreditor97/redreactor /tmp/redreactor \
     \
     && pip3 install --no-cache-dir poetry=="${POETRY_VERSION}" \
     && poetry config virtualenvs.create false \
-    && poetry install --no-dev \
+    && poetry install --no-dev /tmp/redreactor \
     \
     && curl -L -s -o /usr/bin/ha \
         "https://github.com/home-assistant/cli/releases/download/${HA_CLI_VERSION}/ha_${BUILD_ARCH}" \
