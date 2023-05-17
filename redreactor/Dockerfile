@@ -24,7 +24,7 @@ RUN \
         https://github.com/mreditor97/redreactor /tmp/redreactor \
     \
     && mkdir -p /var/redreactor \
-    && mv /tmp/redreactor/src/* /var/redreactor/ \
+    && mv /tmp/redreactor/src/redreactor /var/ \
     \
     && pip3 install --no-cache-dir -r /tmp/requirements.txt \
     \
