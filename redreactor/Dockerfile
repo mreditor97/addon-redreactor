@@ -27,7 +27,7 @@ RUN \
     && git clone --branch "${REDREACTOR_VERSION}" --single-branch --depth 1 \
         https://github.com/mreditor97/redreactor /tmp/redreactor \
     \
-    && pip install --no-cache-dir "poetry==${POETRY_VERSION}" \
+    && pipx install --no-cache-dir "poetry==${POETRY_VERSION}" \
     \
     && poetry config virtualenvs.create false \
     && poetry install --no-dev \
