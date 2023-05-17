@@ -14,6 +14,9 @@ ARG POETRY_VERSION="1.4.1"
 ARG HA_CLI_VERSION="4.24.1"
 ARG REDREACTOR_VERSION="v0.1.0-alpha"
 
+# Added temporary work directory
+WORKDIR /tmp/redreactor
+
 RUN \
     apk add --no-cache --virtual .build-dependencies \
         gcc=12.2.1_git20220924-r4 \
@@ -25,7 +28,6 @@ RUN \
         https://github.com/mreditor97/redreactor /tmp/redreactor \
     \
     && pip3 install --no-cache-dir poetry==${POETRY_VERSION} \
-    && cd /tmp/redreactor \
     && poetry config virtualenvs.create false \
     && poetry install --no-dev \
     \
