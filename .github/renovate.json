@@ -38,7 +38,9 @@
       "matchStrings": [
         "ARG POETRY_VERSION=[\"']?(?<currentValue>.+?)[\"']?\\s+"
       ],
-      "datasourceTemplate": ""
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "python-poetry/poetry",
+      "versioningTemplate": "loose"
     },
     {
       "fileMatch": ["/Dockerfile$"],
