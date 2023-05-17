@@ -23,6 +23,7 @@ RUN \
         musl-dev=1.2.3-r4 \
         linux-headers=5.19.5-r0 \
         git=2.38.5-r0 \
+        libressl-dev=3.6.2-r0 \
         libffi-dev=3.4.4-r0 \
     \
     && git clone --branch "${REDREACTOR_VERSION}" --single-branch --depth 1 \
