@@ -10,7 +10,8 @@ COPY requirements.txt /tmp/
 
 # Setup Base
 ARG BUILD_ARCH=aarch64
-ARG HA_CLI_VERSION="4.23.1"
+ARG POETRY_VERSION="1.4.1"
+ARG HA_CLI_VERSION="4.24.1"
 ARG REDREACTOR_VERSION="v0.1.0-alpha"
 
 RUN \
@@ -21,12 +22,11 @@ RUN \
         git=2.38.5-r0 \
     \
     && git clone --branch "${REDREACTOR_VERSION}" --single-branch --depth 1 \
-        https://github.com/mreditor97/redreactor /tmp/redreactor \
+        https://github.com/mreditor97/redreactor /var/redreactor \
     \
-    && mkdir -p /var/redreactor \
-    && mv /tmp/redreactor/src/redreactor /var/ \
-    \
-    && pip3 install --no-cache-dir -r /tmp/requirements.txt \
+    && pip3 install poetry \
+    && poetry config virtualenvs.create false \
+    && poetry install --no-dev \
     \
     && curl -L -s -o /usr/bin/ha \
         "https://github.com/home-assistant/cli/releases/download/${HA_CLI_VERSION}/ha_${BUILD_ARCH}" \
@@ -42,7 +42,6 @@ COPY rootfs /
 
 # Ensure correct permissions
 RUN \
-    chmod a+x /var/redreactor/redreactor.py \
     && chmod a+x /etc/s6-overlay/s6-rc.d/redreactor/run \
     && chmod a+x /etc/s6-overlay/s6-rc.d/redreactor/finish
 

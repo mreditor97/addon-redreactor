@@ -7,5 +7,5 @@
 bashio::log.info "Starting the Red Reactor Monitor..."
 
 # Run Red Reactor
-cd /var/redreactor/
-exec python ./redreactor.py --config /data/options.json --database /data/database.db --log /data/redreactor.log
+python -m redreactor --config /data/options.json --database /data/database.db --log /data/redreactor.log
+#exec python ./redreactor.py --config /data/options.json --database /data/database.db --log /data/redreactor.log
