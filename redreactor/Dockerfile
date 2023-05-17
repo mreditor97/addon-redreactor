@@ -23,11 +23,12 @@ RUN \
         musl-dev=1.2.3-r4 \
         linux-headers=5.19.5-r0 \
         git=2.38.5-r0 \
+        libffi-dev=3.4.4-r0 \
     \
     && git clone --branch "${REDREACTOR_VERSION}" --single-branch --depth 1 \
         https://github.com/mreditor97/redreactor /tmp/redreactor \
     \
-    && pipx install --no-cache-dir "poetry==${POETRY_VERSION}" \
+    && pip install --no-cache-dir "poetry==${POETRY_VERSION}" \
     \
     && poetry config virtualenvs.create false \
     && poetry install --no-dev \
