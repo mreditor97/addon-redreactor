@@ -10,9 +10,8 @@ COPY requirements.txt /tmp/
 
 # Setup Base
 ARG BUILD_ARCH=aarch64
-ARG POETRY_VERSION="1.4.2"
 ARG HA_CLI_VERSION="4.24.1"
-ARG REDREACTOR_VERSION="v0.1.0-alpha"
+ARG REDREACTOR_VERSION="0.1.0-alpha"
 
 # Added temporary work directory
 WORKDIR /tmp/redreactor
@@ -23,17 +22,12 @@ RUN \
         musl-dev=1.2.3-r4 \
         linux-headers=5.19.5-r0 \
         git=2.38.5-r0 \
-        libressl-dev=3.6.2-r0 \
-        libffi-dev=3.4.4-r0 \
-        cargo=1.64.0-r2 \
     \
     && git clone --branch "${REDREACTOR_VERSION}" --single-branch --depth 1 \
         https://github.com/mreditor97/redreactor /tmp/redreactor \
     \
-    && pip install --no-cache-dir "poetry==${POETRY_VERSION}" \
-    \
-    && poetry config virtualenvs.create false \
-    && poetry install --only main \
+    && pip install --no-cache-dir -r /tmp/requirements.txt \
+    && pip install /tmp/redreactor \
     \
     && curl -L -s -o /usr/bin/ha \
         "https://github.com/home-assistant/cli/releases/download/${HA_CLI_VERSION}/ha_${BUILD_ARCH}" \
