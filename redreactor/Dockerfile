@@ -1,4 +1,4 @@
-ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-python:3.10-alpine3.17
+ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-python:3.11-alpine3.17
 # hadolint ignore=DL3006
 FROM ${BUILD_FROM}
 
@@ -10,8 +10,8 @@ COPY requirements.txt /tmp/
 
 # Setup Base
 ARG BUILD_ARCH=aarch64
-ARG HA_CLI_VERSION="4.23.0"
-ARG REDREACTOR_VERSION="0.1.0-alpha"
+ARG HA_CLI_VERSION="4.23.1"
+ARG REDREACTOR_VERSION="v0.1.0-alpha"
 
 RUN \
     apk add --no-cache --virtual .build-dependencies \
@@ -20,7 +20,7 @@ RUN \
         linux-headers=5.19.5-r0 \
         git=2.38.5-r0 \
     \
-    && git clone --branch ${REDREACTOR_VERSION} --single-branch --depth 1 \
+    && git clone --branch "${REDREACTOR_VERSION}" --single-branch --depth 1 \
         https://github.com/mreditor97/redreactor /tmp/redreactor \
     \
     && mkdir -p /var/redreactor \
