@@ -10,7 +10,7 @@ COPY requirements.txt /tmp/
 
 # Setup Base
 ARG BUILD_ARCH=aarch64
-ARG POETRY_VERSION="1.4.1"
+ARG POETRY_VERSION="1.4.2"
 ARG HA_CLI_VERSION="4.24.1"
 ARG REDREACTOR_VERSION="v0.1.0-alpha"
 
