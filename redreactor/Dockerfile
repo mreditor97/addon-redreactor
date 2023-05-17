@@ -16,6 +16,7 @@ ARG REDREACTOR_VERSION="0.1.0-alpha"
 # Added temporary work directory
 WORKDIR /tmp/redreactor
 
+# hadolint ignore=DL3013
 RUN \
     apk add --no-cache --virtual .build-dependencies \
         gcc=12.2.1_git20220924-r4 \
