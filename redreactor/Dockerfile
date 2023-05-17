@@ -23,7 +23,7 @@ RUN \
         musl-dev=1.2.3-r4 \
         linux-headers=5.19.5-r0 \
         git=2.38.5-r0 \
-        openssl-dev=3.0.8-r4 \
+        libressl-dev=3.6.2-r0 \
         libffi-dev=3.4.4-r0 \
         cargo=1.64.0-r2 \
     \
@@ -33,7 +33,7 @@ RUN \
     && pip install --no-cache-dir "poetry==${POETRY_VERSION}" \
     \
     && poetry config virtualenvs.create false \
-    && poetry install --no-dev \
+    && poetry install --only main \
     \
     && curl -L -s -o /usr/bin/ha \
         "https://github.com/home-assistant/cli/releases/download/${HA_CLI_VERSION}/ha_${BUILD_ARCH}" \
