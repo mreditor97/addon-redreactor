@@ -17,7 +17,6 @@ jobs:
     name: Add-on Deploy
     uses: hassio-addons/workflows/.github/workflows/addon-deploy.yaml@main
     with:
-      slug: 'addon-redreactor'
       repository: 'homeassistant-addons'
       repository_beta: 'homeassistant-addons-beta'
       repository_edge: 'homeassistant-addons-edge'
