@@ -30,7 +30,7 @@
         "ARG REDREACTOR_VERSION=[\"']?(?<currentValue>.+?)[\"']?\\s+"
       ],
       "datasourceTemplate": "github-tags",
-      "depNameTemplate": "mreditor97/redreactor",
+      "depNameTemplate": "mreditor97/redreactor"
     },
     {
       "fileMatch": ["/Dockerfile$"],
