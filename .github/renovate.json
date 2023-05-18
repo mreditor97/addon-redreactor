@@ -50,11 +50,6 @@
       "automerge": true
     },
     {
-      "matchDatasources": ["github-releases"],
-      "matchDepNames": ["mreditor97/redreactor"],
-      "automerge": true
-    },
-    {
       "matchDatasources": ["repology"],
       "automerge": true
     },
