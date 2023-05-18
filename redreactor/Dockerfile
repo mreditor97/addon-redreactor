@@ -11,7 +11,7 @@ COPY requirements.txt /tmp/
 # Setup Base
 ARG BUILD_ARCH=aarch64
 ARG HA_CLI_VERSION="4.24.1"
-ARG REDREACTOR_VERSION="0.1.2-alpha"
+ARG REDREACTOR_VERSION="0.1.0"
 
 # Added temporary work directory
 WORKDIR /tmp/redreactor
@@ -24,7 +24,7 @@ RUN \
         linux-headers=5.19.5-r0 \
         git=2.38.5-r0 \
     \
-    && git clone --branch "${REDREACTOR_VERSION}" --single-branch --depth 1 \
+    && git clone --branch "v${REDREACTOR_VERSION}" --single-branch --depth 1 \
         https://github.com/mreditor97/redreactor /tmp/redreactor \
     \
     && pip3 install --no-cache-dir -r /tmp/requirements.txt \
