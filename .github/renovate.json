@@ -29,8 +29,10 @@
       "matchStrings": [
         "ARG REDREACTOR_VERSION=[\"']?(?<currentValue>.+?)[\"']?\\s+"
       ],
-      "datasourceTemplate": "github-tags",
-      "depNameTemplate": "mreditor97/redreactor"
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "mreditor97/redreactor",
+      "versioningTemplate": "loose",
+      "extractVersionTemplate": "^v(?<version>.*)$"
     },
     {
       "fileMatch": ["/Dockerfile$"],
