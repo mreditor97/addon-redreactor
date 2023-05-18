@@ -11,7 +11,7 @@ COPY requirements.txt /tmp/
 # Setup Base
 ARG BUILD_ARCH=aarch64
 ARG HA_CLI_VERSION="4.24.1"
-ARG REDREACTOR_VERSION="0.1.0"
+ARG REDREACTOR_VERSION="0.1.0-beta"
 
 # Added temporary work directory
 WORKDIR /tmp/redreactor
