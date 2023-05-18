@@ -24,7 +24,7 @@ RUN \
         linux-headers=5.19.5-r0 \
         git=2.38.5-r0 \
     \
-    && git clone --branch "v${REDREACTOR_VERSION}" --single-branch --depth 1 \
+    && git clone --branch "${REDREACTOR_VERSION}" --single-branch --depth 1 \
         https://github.com/mreditor97/redreactor /tmp/redreactor \
     \
     && pip3 install --no-cache-dir -r /tmp/requirements.txt \
