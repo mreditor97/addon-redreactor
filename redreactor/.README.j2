@@ -56,7 +56,7 @@ If you are more interested in stable releases of our add-ons:
 
 {% endif %}
 
-[release-shield]: https://img.shields.io/badge/version-{{ version }}-blue.svg
+[release-shield]: https://img.shields.io/badge/version-{{ version | replace('-', '--', 2) }}-blue.svg
 [release]: {{ repo }}/tree/{{ version }}
 [aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
@@ -64,4 +64,3 @@ If you are more interested in stable releases of our add-ons:
 [amd64-shield]: https://img.shields.io/badge/amd64-no-red.svg
 [i386-shield]: https://img.shields.io/badge/i386-no-red.svg
 [redreactor]: https://www.theredreactor.com/
-
