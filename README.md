@@ -16,7 +16,7 @@ Assistant. The data is published to your Home Assistant instance via MQTT.
 
 The [Red Reactor][redreactor] can be purchased to help protect your Raspberry Pi from power outages.
 
-[release-shield]: https://img.shields.io/github/v/release/mreditor97/addon-redreactor?include_prereleases
+[release-shield]: https://img.shields.io/github/v/release/mreditor97/redreactor?color=blue&include_prereleases
 [release]: https://github.com/mreditor97/addon-redreactor/releases
 [aarch64-shield]: https://img.shields.io/badge/aarch64-yes-green.svg
 [armhf-shield]: https://img.shields.io/badge/armhf-yes-green.svg
