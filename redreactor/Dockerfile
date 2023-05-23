@@ -5,6 +5,9 @@ FROM ${BUILD_FROM}
 # Set Shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
+# Copy Python requirements file
+COPY requirements.txt /tmp/
+
 # Setup Base
 ARG BUILD_ARCH=aarch64
 ARG HA_CLI_VERSION="4.25.0"
@@ -15,7 +18,7 @@ RUN \
         musl-dev=1.2.3-r5 \
         linux-headers=5.19.5-r0 \
     \
-    && pip3 install --no-cache-dir redreactor==0.1.0 \
+    && pip3 install --no-cache-dir -r /tmp/requirements.txt \
     \
     && curl -L -s -o /usr/bin/ha \
         "https://github.com/home-assistant/cli/releases/download/${HA_CLI_VERSION}/ha_${BUILD_ARCH}" \
