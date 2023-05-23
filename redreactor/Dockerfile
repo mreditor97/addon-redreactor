@@ -5,30 +5,17 @@ FROM ${BUILD_FROM}
 # Set Shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Copy Python requirements file
-COPY requirements.txt /tmp/
-
 # Setup Base
 ARG BUILD_ARCH=aarch64
 ARG HA_CLI_VERSION="4.25.0"
-ARG REDREACTOR_VERSION="0.1.0-beta.1"
 
-# Added temporary work directory
-WORKDIR /tmp/redreactor
-
-# hadolint ignore=DL3013
 RUN \
     apk add --no-cache --virtual .build-dependencies \
         gcc=12.2.1_git20220924-r4 \
         musl-dev=1.2.3-r5 \
         linux-headers=5.19.5-r0 \
-        git=2.38.5-r0 \
     \
-    && git clone --branch "${REDREACTOR_VERSION}" --single-branch --depth 1 \
-        https://github.com/mreditor97/redreactor /tmp/redreactor \
-    \
-    && pip3 install --no-cache-dir -r /tmp/requirements.txt \
-    && pip3 install --no-cache-dir /tmp/redreactor \
+    && pip3 install --no-cache-dir redreactor==0.1.0 \
     \
     && curl -L -s -o /usr/bin/ha \
         "https://github.com/home-assistant/cli/releases/download/${HA_CLI_VERSION}/ha_${BUILD_ARCH}" \
@@ -63,11 +50,11 @@ LABEL \
     io.hass.arch="${BUILD_ARCH}" \
     io.hass.type="addon" \
     io.hass.version=${BUILD_VERSION} \
-    maintainer="MrEditor97 <info@mreditor97.co.uk>" \
+    maintainer="MrEditor97 <dev@mreditor97.co.uk>" \
     org.opencontainers.image.title="${BUILD_NAME}" \
     org.opencontainers.image.description="${BUILD_DESCRIPTION}" \
     org.opencontainers.image.vendor="Home Assistant Add-ons" \
-    org.opencontainers.image.authors="MrEditor97 <info@mreditor97.co.uk>" \
+    org.opencontainers.image.authors="MrEditor97 <dev@mreditor97.co.uk>" \
     org.opencontainers.image.licenses="MIT" \
     org.opencontainers.image.url="https://github.com/mreditor97/homeassistant-addons" \
     org.opencontainers.image.source="https://github.com/${BUILD_REPOSITORY}" \
