@@ -10,7 +10,7 @@ COPY requirements.txt /tmp/
 
 # Setup Base
 ARG BUILD_ARCH=aarch64
-ARG HA_CLI_VERSION="4.40.0"
+ARG HA_CLI_VERSION="4.40.1"
 
 RUN \
     apk add --no-cache --virtual .build-dependencies \
