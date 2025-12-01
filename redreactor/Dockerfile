@@ -13,32 +13,32 @@ ARG BUILD_ARCH=aarch64
 ARG HA_CLI_VERSION="4.43.0"
 ARG VCGENCMD_VERSION="1.20230214"
 
+WORKDIR /tmp
+
 RUN \
-    apk add --no-cache --virtual .vcgencmd-build-deps \
-        git cmake make gcc g++ musl-dev \
-    && git clone --depth=1 --branch ${VCGENCMD_VERSION} https://github.com/raspberrypi/userland.git /tmp/userland \
-    && cd /tmp/userland \
-    && mkdir build && cd build \
-    && cmake -DCMAKE_BUILD_TYPE=Release .. \
-    && make \
-    && install -m 0755 ./build/bin/vcgencmd /usr/bin/vcgencmd \
-    && apk del --no-cache --purge .vcgencmd-build-deps \
-    && rm -rf /tmp/userland \
-    && apk add --no-cache --virtual .build-dependencies \
+    apk add --no-cache --virtual .build-dependencies \
         gcc=12.2.1_git20220924-r4 \
+        g++=12.2.1_git20220924-r4 \
         musl-dev=1.2.3-r6 \
         linux-headers=5.19.5-r0 \
+        git=2.38.4-r0 \
+        cmake=3.24.3-r0 \
+        make=4.3-r1 \
     \
     && pip3 install --no-cache-dir -r /tmp/requirements.txt \
     \
     && curl -L -s -o /usr/bin/ha \
         "https://github.com/home-assistant/cli/releases/download/${HA_CLI_VERSION}/ha_${BUILD_ARCH}" \
-    \
     && chmod a+x /usr/bin/ha \
     \
+    && git clone --depth=1 --branch "${VCGENCMD_VERSION}" \
+        https://github.com/raspberrypi/userland.git /tmp/userland \
+    && cmake -S /tmp/userland -B /tmp/userland/build -DCMAKE_BUILD_TYPE=Release \
+    && cmake --build /tmp/userland/build \
+    && install -m 0755 /tmp/userland/build/bin/vcgencmd /usr/bin/vcgencmd \
+    \
     && apk del --no-cache --purge .build-dependencies \
-    && rm -fr \
-        /tmp/*
+    && rm -rf /tmp/*
 
 # Copy Root Filesystem
 COPY rootfs /
