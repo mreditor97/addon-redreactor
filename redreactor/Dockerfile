@@ -13,7 +13,10 @@ ARG BUILD_ARCH=aarch64
 ARG HA_CLI_VERSION="4.43.0"
 
 RUN \
-    apk add --no-cache --virtual .build-dependencies \
+    apk add --no-cache \
+        libraspberrypi \
+    \
+    && apk add --no-cache --virtual .build-dependencies \
         gcc=12.2.1_git20220924-r4 \
         musl-dev=1.2.3-r6 \
         linux-headers=5.19.5-r0 \
