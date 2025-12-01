@@ -10,8 +10,10 @@ arch:
 init: false
 privileged:
   - SYS_ADMIN
+  - SYS_RAWIO
 devices:
   - /dev/i2c-1
+  - /dev/vchiq
 hassio_api: true
 hassio_role: manager
 services:
