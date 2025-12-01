@@ -11,11 +11,19 @@ COPY requirements.txt /tmp/
 # Setup Base
 ARG BUILD_ARCH=aarch64
 ARG HA_CLI_VERSION="4.43.0"
+ARG VCGENCMD_VERSION="1.20230214"
 
 RUN \
-    apk add --no-cache \
-        raspberrypi-utils-vcgencmd=0.20251119-r0 \
-    \
+    apk add --no-cache --virtual .vcgencmd-build-deps \
+        git cmake make gcc g++ musl-dev \
+    && git clone --depth=1 --branch ${VCGENCMD_VERSION} https://github.com/raspberrypi/userland.git /tmp/userland \
+    && cd /tmp/userland \
+    && mkdir build && cd build \
+    && cmake -DCMAKE_BUILD_TYPE=Release .. \
+    && make \
+    && install -m 0755 ./build/bin/vcgencmd /usr/bin/vcgencmd \
+    && apk del --no-cache --purge .vcgencmd-build-deps \
+    && rm -rf /tmp/userland \
     && apk add --no-cache --virtual .build-dependencies \
         gcc=12.2.1_git20220924-r4 \
         musl-dev=1.2.3-r6 \
