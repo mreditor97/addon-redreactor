@@ -7,8 +7,6 @@ url: https://github.com/mreditor97/addon-redreactor
 startup: services
 arch:
   - aarch64
-  - armhf
-  - armv7
 init: false
 privileged:
   - SYS_ADMIN
