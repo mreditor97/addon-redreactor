@@ -13,8 +13,9 @@ ARG BUILD_ARCH=aarch64
 ARG HA_CLI_VERSION="4.43.0"
 
 RUN \
+    # hadolint ignore=DL3018
     apk add --no-cache \
-        raspberrypi-utils-vcgencmd=0.20251119-r0 \
+        raspberrypi-utils \
     \
     && apk add --no-cache --virtual .build-dependencies \
         gcc=12.2.1_git20220924-r4 \
