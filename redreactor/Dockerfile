@@ -1,4 +1,4 @@
-ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-python:3.12-alpine3.17
+ARG BUILD_FROM=ghcr.io/home-assistant/aarch64-base-python:3.14-alpine3.22
 # hadolint ignore=DL3006
 FROM ${BUILD_FROM}
 
@@ -12,12 +12,8 @@ COPY requirements.txt /tmp/
 ARG BUILD_ARCH=aarch64
 ARG HA_CLI_VERSION="4.43.0"
 
-# hadolint ignore=DL3018
 RUN \
-    apk add --no-cache \
-        raspberrypi-utils \
-    \
-    && apk add --no-cache --virtual .build-dependencies \
+    apk add --no-cache --virtual .build-dependencies \
         gcc=12.2.1_git20220924-r4 \
         musl-dev=1.2.3-r6 \
         linux-headers=5.19.5-r0 \
