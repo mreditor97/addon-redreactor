@@ -14,7 +14,7 @@ ARG HA_CLI_VERSION="4.43.0"
 
 RUN \
     apk add --no-cache \
-        libraspberrypi \
+        raspberrypi-utils-vcgencmd=0.20251119-r0 \
     \
     && apk add --no-cache --virtual .build-dependencies \
         gcc=12.2.1_git20220924-r4 \
