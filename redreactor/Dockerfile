@@ -12,8 +12,8 @@ COPY requirements.txt /tmp/
 ARG BUILD_ARCH=aarch64
 ARG HA_CLI_VERSION="4.43.0"
 
+# hadolint ignore=DL3018
 RUN \
-    # hadolint ignore=DL3018
     apk add --no-cache \
         raspberrypi-utils \
     \
