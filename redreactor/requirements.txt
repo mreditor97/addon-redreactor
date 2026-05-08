@@ -1,1 +1,1 @@
-redreactor==0.1.7
+redreactor==0.1.8
