@@ -3,9 +3,37 @@
 # Home Assistant App: Red Reactor Monitor
 # Runs the Red Reactor service
 # ==============================================================================
+declare config_file="/tmp/redreactor.json"
+declare filter
+declare -a jq_args=()
 
 bashio::log.info "Starting the Red Reactor Monitor..."
 
-# Run Red Reactor
-python -m redreactor --config /data/options.json --database /data/database.db --log /data/redreactor.log
-#exec python ./redreactor.py --config /data/options.json --database /data/database.db --log /data/redreactor.log
+# Keep retrying the broker instead of exiting, as the Supervisor does not
+# restart an app that has stopped
+filter='.mqtt.exit_on_fail = false'
+
+# Fill in any MQTT connection details left empty from the MQTT service
+# (e.g. the Mosquitto broker app), so no manual MQTT setup is needed
+if bashio::services.available "mqtt"; then
+    if ! bashio::config.has_value 'mqtt.broker'; then
+        bashio::log.info "Using the MQTT broker provided by the Supervisor"
+        jq_args+=(--arg host "$(bashio::services 'mqtt' 'host')")
+        jq_args+=(--arg port "$(bashio::services 'mqtt' 'port')")
+        # shellcheck disable=SC2016 # jq variables, expanded by jq
+        filter+=' | .mqtt.broker = $host | .mqtt.port = ($port | tonumber)'
+    fi
+    if ! bashio::config.has_value 'mqtt.user'; then
+        jq_args+=(--arg username "$(bashio::services 'mqtt' 'username')")
+        jq_args+=(--arg password "$(bashio::services 'mqtt' 'password')")
+        # shellcheck disable=SC2016 # jq variables, expanded by jq
+        filter+=' | .mqtt.user = $username | .mqtt.password = $password'
+    fi
+elif ! bashio::config.has_value 'mqtt.broker'; then
+    bashio::log.warning "No MQTT broker configured, and no MQTT service found"
+fi
+
+jq "${jq_args[@]}" "${filter}" /data/options.json > "${config_file}"
+
+# Run Red Reactor, exec so it receives the stop signal from s6
+exec python -m redreactor --config "${config_file}" --database /data/database.db --log /data/redreactor.log

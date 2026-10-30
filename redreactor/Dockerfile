@@ -14,13 +14,13 @@ ARG HA_CLI_VERSION="5.6.0"
 
 RUN \
     apk add --no-cache --virtual .build-dependencies \
-        gcc=12.2.1_git20220924-r4 \
-        musl-dev=1.2.3-r6 \
-        linux-headers=5.19.5-r0 \
+        gcc=14.2.0-r6 \
+        musl-dev=1.2.5-r13 \
+        linux-headers=6.14.2-r0 \
     \
     && pip3 install --no-cache-dir -r /tmp/requirements.txt \
     \
-    && curl -L -s -o /usr/bin/ha \
+    && curl -fsSL -o /usr/bin/ha \
         "https://github.com/home-assistant/cli/releases/download/${HA_CLI_VERSION}/ha_${BUILD_ARCH}" \
     \
     && chmod a+x /usr/bin/ha \
