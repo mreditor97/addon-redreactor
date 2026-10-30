@@ -9,6 +9,12 @@ configuration:
   homeassistant:
     name: Home Assistant
     description: Home Assistant MQTT Discovery configuration
+  ina:
+    name: Red Reactor sensor
+    description: >-
+      I2C address of the Red Reactor's INA219 (default 64, which is 0x40) and
+      how often in seconds it is read (default 5). Only change these if you
+      know you need to
   system:
     name: System Configuration
     description: The command required to Shutdown or Restart the system

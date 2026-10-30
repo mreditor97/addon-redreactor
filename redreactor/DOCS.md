@@ -29,12 +29,22 @@ mqtt:
   user: redreactor # Username for your MQTT Broker (optional)
   password: redreactor # Password for your MQTT Broker (optional)
   client_id: redreactor-pi # MQTT client ID, must be unique on the broker (optional)
+  tls:
+    enabled: false # Encrypt the MQTT connection
+    ca_certs: /ssl/ca.crt # CA certificate, leave out to use the system ones (optional)
+    certfile: /ssl/client.crt # Client certificate login only (optional)
+    keyfile: /ssl/client.key # Client certificate login only (optional)
+    insecure: false # Skip the hostname check, for testing only (optional)
 hostname:
   name: redreactor-pi # Hostname (used as a MQTT topic identifier)
   pretty: Raspberry Pi # Pretty Display Name
 homeassistant:
+  discovery: true # Create the Red Reactor device in Home Assistant (optional)
   discovery_interval: 120 # Home Assistant Configuration discovery push interval
   expire_after: 120 # Home Assistant MQTT Data expiry time
+ina:
+  address: 64 # I2C address of the Red Reactor, 64 is 0x40 (optional)
+  monitor_interval: 5 # Seconds between battery readings (optional)
 system:
   shutdown: ha host shutdown # Shutdown (if using HASS OS, this doesn't need changing)
   restart: ha host restart # Restart (if using HASS OS, this doesn't need changing)
@@ -47,7 +57,15 @@ If you use the Mosquitto broker app, leave `broker`, `user` and `password` empty
 
 If the broker can't be reached, the app keeps retrying rather than stopping.
 
-Other configuration options are available from within the Home Assistant Device configuration page. Including the ability to change the `report_interval` to Home Assistant.
+Certificates for TLS go in the Home Assistant `/ssl` folder, which the app can read. Use port `8883` (or whatever your broker uses for TLS) with `tls.enabled: true`.
+
+Other configuration options are available from within the Home Assistant Device configuration page:
+
+- **Battery shutdown level**: when the battery drops to this percentage while running on battery, the Red Reactor safely shuts down Home Assistant. If Home Assistant starts up below this level while the battery is charging, it stays on.
+- **Battery runtime limit**: minutes on battery before a safe shutdown, whatever the charge. `0` turns it off.
+- **Report interval**, and the battery voltage minimum and maximum used to work out the battery level.
+
+The device also shows the power drawn from the battery, and whether it is charging.
 
 ## OS Specific I2C configuration
 
