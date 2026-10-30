@@ -30,11 +30,11 @@ mqtt:
   password: redreactor # Password for your MQTT Broker (optional)
   client_id: redreactor-pi # MQTT client ID, must be unique on the broker (optional)
 hostname:
-  name: redreactor-pi # Hostname (used as a MQTT topic identifier)
+  name: redreactor-pi # Hostname (used as a MQTT topic level, so no /, + or #)
   pretty: Raspberry Pi # Pretty Display Name
 homeassistant:
-  discovery_interval: 120 # Home Assistant Configuration discovery push interval
-  expire_after: 120 # Home Assistant MQTT Data expiry time
+  discovery_interval: 120 # Home Assistant Configuration discovery push interval (seconds, 1 or more)
+  expire_after: 120 # Home Assistant MQTT Data expiry time (seconds, 0 or more)
 system:
   shutdown: ha host shutdown # Shutdown (if using HASS OS, this doesn't need changing)
   restart: ha host restart # Restart (if using HASS OS, this doesn't need changing)

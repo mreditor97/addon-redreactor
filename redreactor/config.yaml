@@ -38,11 +38,11 @@ schema:
     password: password?
     client_id: str?
   hostname:
-    name: str
+    name: match(^[^/+#]+$)
     pretty: str
   homeassistant:
-    discovery_interval: int
-    expire_after: int
+    discovery_interval: int(1,)
+    expire_after: int(0,)
   system:
     shutdown: str
     restart: str
