@@ -36,15 +36,15 @@ mqtt:
     keyfile: /ssl/client.key # Client certificate login only (optional)
     insecure: false # Skip the hostname check, for testing only (optional)
 hostname:
-  name: redreactor-pi # Hostname (used as a MQTT topic identifier)
+  name: redreactor-pi # Hostname (used as a MQTT topic level, so no /, + or #)
   pretty: Raspberry Pi # Pretty Display Name
 homeassistant:
   discovery: true # Create the Red Reactor device in Home Assistant (optional)
-  discovery_interval: 120 # Home Assistant Configuration discovery push interval
-  expire_after: 120 # Home Assistant MQTT Data expiry time
+  discovery_interval: 120 # Home Assistant Configuration discovery push interval (seconds, 1 or more)
+  expire_after: 120 # Home Assistant MQTT Data expiry time (seconds, 0 or more)
 ina:
-  address: 64 # I2C address of the Red Reactor, 64 is 0x40 (optional)
-  monitor_interval: 5 # Seconds between battery readings (optional)
+  address: 64 # I2C address of the Red Reactor, 64 is 0x40, from 3 to 119 (optional)
+  monitor_interval: 5 # Seconds between battery readings, 1 to 60 (optional)
 system:
   shutdown: ha host shutdown # Shutdown (if using HASS OS, this doesn't need changing)
   restart: ha host restart # Restart (if using HASS OS, this doesn't need changing)
