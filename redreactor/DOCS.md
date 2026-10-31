@@ -62,7 +62,6 @@ Certificates for TLS go in the Home Assistant `/ssl` folder, which the app can r
 Other configuration options are available from within the Home Assistant Device configuration page:
 
 - **Battery shutdown level**: when the battery drops to this percentage while running on battery, the Red Reactor safely shuts down Home Assistant. If Home Assistant starts up below this level while the battery is charging, it stays on.
-- **Battery runtime limit**: minutes on battery before a safe shutdown, whatever the charge. `0` turns it off.
 - **Report interval**, and the battery voltage minimum and maximum used to work out the battery level.
 
 The device also shows the power drawn from the battery, and whether it is charging.
