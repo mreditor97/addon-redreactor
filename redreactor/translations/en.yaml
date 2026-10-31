@@ -78,6 +78,16 @@ configuration:
         description: >-
           Seconds after which Home Assistant marks the sensors as unavailable
           if no new data arrives (0 or more)
+      status_topic:
+        name: Birth message topic
+        description: >-
+          Topic Home Assistant publishes its birth message on. Red Reactor
+          resends its discovery and latest readings when it arrives (default
+          homeassistant/status)
+      status_online:
+        name: Birth message payload
+        description: >-
+          Payload of the Home Assistant birth message (default online)
   ina:
     name: Red Reactor sensor
     description: >-

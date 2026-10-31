@@ -42,6 +42,8 @@ homeassistant:
   discovery: true # Create the Red Reactor device in Home Assistant (optional)
   discovery_interval: 120 # Home Assistant Configuration discovery push interval (seconds, 1 to 86400)
   expire_after: 120 # Home Assistant MQTT Data expiry time (seconds, 0 or more)
+  status_topic: homeassistant/status # Home Assistant birth message topic, resends data when it restarts (optional)
+  status_online: online # Home Assistant birth message payload (optional)
 ina:
   address: 64 # I2C address of the Red Reactor, 64 is 0x40, from 3 to 119 (optional)
   monitor_interval: 5 # Seconds between battery readings, 1 to 60 (optional)
