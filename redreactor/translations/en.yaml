@@ -92,6 +92,29 @@ configuration:
       monitor_interval:
         name: Monitor interval
         description: Seconds between battery readings, from 1 to 60 (default 5)
+  battery:
+    name: Battery
+    description: >-
+      Battery settings used to work out the battery level. When a voltage
+      curve is set, the battery voltage minimum and maximum no longer affect
+      the level
+    fields:
+      internal_resistance:
+        name: Internal resistance
+        description: >-
+          Battery internal resistance in milliohms, used to correct the voltage
+          for the sag under load (default 35, 0 turns it off)
+      average_readings:
+        name: Average readings
+        description: >-
+          How many readings are averaged for the battery level, from 1 to 100
+          (default 6, 1 turns it off)
+      curve:
+        name: Voltage curve
+        description: >-
+          Resting voltage and battery level % points, at least 2 with rising
+          voltages. Leave empty for a straight line between the battery voltage
+          minimum and maximum
   system:
     name: System Configuration
     description: The command required to Shutdown or Restart the system
