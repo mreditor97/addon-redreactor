@@ -1,1 +1,1 @@
-redreactor @ https://github.com/mreditor97/redreactor/releases/download/0.1.9a587/redreactor-0.1.9a587-py3-none-any.whl
+redreactor @ https://github.com/mreditor97/redreactor/releases/download/0.1.9a588/redreactor-0.1.9a588-py3-none-any.whl
