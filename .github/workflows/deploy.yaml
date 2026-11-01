@@ -9,7 +9,7 @@ on:
   release:
     types:
       - published
-  # Started by the Redreactor workflow after it updates the redreactor alpha, as
+  # Started by the Release workflow after it updates the redreactor alpha, as
   # its commit does not trigger a push run
   workflow_dispatch:
 
