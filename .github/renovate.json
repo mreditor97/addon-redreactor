@@ -75,8 +75,11 @@
       "matchPackageNames": ["/^alpine_.*/docker.*$/"]
     },
     {
-      "description": "The edge pin is updated by the redreactor master build",
-      "matchFileNames": ["redreactor/requirements-edge.txt"],
+      "description": "The beta and edge pins are updated by redreactor builds",
+      "matchFileNames": [
+        "redreactor/requirements-beta.txt",
+        "redreactor/requirements-edge.txt"
+      ],
       "enabled": false
     }
   ]

@@ -6,7 +6,7 @@ FROM ${BUILD_FROM}
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # Copy Python requirements files
-COPY requirements.txt requirements-edge.txt /tmp/
+COPY requirements.txt requirements-beta.txt requirements-edge.txt /tmp/
 
 # Setup Base
 ARG BUILD_ARCH=aarch64
@@ -14,11 +14,14 @@ ARG BUILD_VERSION
 ARG HA_CLI_VERSION="5.6.0"
 
 # Edge builds (versioned by a 7 character commit hash) install the latest
-# redreactor alpha, everything else installs the stable release
+# redreactor alpha, beta builds (versioned X.Y.Z-something) the latest
+# redreactor beta, and everything else the stable release
 RUN \
     requirements="/tmp/requirements.txt" \
     && if [[ "${BUILD_VERSION:-}" =~ ^[0-9a-f]{7}$ ]]; then \
         requirements="/tmp/requirements-edge.txt"; \
+    elif [[ "${BUILD_VERSION:-}" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+- ]]; then \
+        requirements="/tmp/requirements-beta.txt"; \
     fi \
     \
     && apk add --no-cache --virtual .build-dependencies \

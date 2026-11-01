@@ -1,0 +1,106 @@
+---
+name: Beta
+
+# yamllint disable-line rule:truthy
+on:
+  # Sent by the redreactor release workflow after it builds a beta
+  repository_dispatch:
+    types:
+      - redreactor-beta
+
+concurrency:
+  group: beta
+
+permissions: {}
+
+jobs:
+  update:
+    name: Release a beta app with the redreactor beta
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: ℹ️ Check the requested beta
+        id: beta
+        env:
+          TAG: ${{ github.event.client_payload.tag }}
+          WHEEL: ${{ github.event.client_payload.wheel }}
+        run: |
+          if [[ ! "${TAG}" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+[0-9A-Za-z.-]*$ ]]; then
+            echo "::error ::Not a redreactor release tag: ${TAG}"
+            exit 1
+          fi
+          if [[ ! "${WHEEL}" =~ ^redreactor-[0-9A-Za-z.]+-py3-none-any\.whl$ ]]; then
+            echo "::error ::Not a redreactor wheel: ${WHEEL}"
+            exit 1
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "wheel=${WHEEL}" >> "$GITHUB_OUTPUT"
+      - name: ⤵️ Check out code from GitHub
+        # actions/checkout v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: master
+          # Full history and tags, to work out the next app beta version
+          fetch-depth: 0
+          persist-credentials: false
+      - name: 🏗 Pin the beta app to the redreactor beta
+        id: pin
+        env:
+          TAG: ${{ steps.beta.outputs.tag }}
+          WHEEL: ${{ steps.beta.outputs.wheel }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          release="https://github.com/${GITHUB_REPOSITORY_OWNER}/redreactor/releases"
+          echo "redreactor @ ${release}/download/${TAG}/${WHEEL}" \
+            > redreactor/requirements-beta.txt
+          if ! git diff --quiet; then
+            git config user.name "github-actions[bot]"
+            git config user.email \
+              "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit --file - redreactor/requirements-beta.txt <<MESSAGE
+          Update the beta app to redreactor ${TAG}
+
+          ${release}/tag/${TAG}
+          MESSAGE
+            # The token is only used for this push, not kept in the checkout
+            git push \
+              "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+              HEAD:master
+          fi
+          echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - name: ℹ️ Work out the next app beta version
+        id: version
+        run: |
+          # The next patch after the latest stable app release, then the next
+          # free beta number, e.g. 0.1.6 -> 0.1.7-beta.0, 0.1.7-beta.1, ...
+          latest=$(git tag --list \
+            | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' \
+            | sed 's/^v//' \
+            | sort -V \
+            | tail -n 1)
+          latest="${latest:-0.0.0}"
+          IFS=. read -r major minor patch <<< "${latest}"
+          base="${major}.${minor}.$((patch + 1))"
+          number=0
+          while git rev-parse -q --verify "refs/tags/${base}-beta.${number}" \
+            > /dev/null; do
+            number=$((number + 1))
+          done
+          echo "version=${base}-beta.${number}" >> "$GITHUB_OUTPUT"
+      - name: 🚀 Publish the beta app pre-release
+        # Created with RELEASE_TOKEN rather than GITHUB_TOKEN, so that it
+        # starts the Deploy workflow, which publishes the app to
+        # homeassistant-apps-beta
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          COMMIT: ${{ steps.pin.outputs.commit }}
+          TAG: ${{ steps.beta.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          gh release create "${VERSION}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --target "${COMMIT}" \
+            --prerelease \
+            --title "${VERSION}" \
+            --notes "Beta of the app with redreactor ${TAG}."
