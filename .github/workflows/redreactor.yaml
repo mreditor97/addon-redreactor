@@ -136,11 +136,11 @@ jobs:
           echo "version=${base}-beta.${number}" >> "$GITHUB_OUTPUT"
       - name: 🚀 Publish the app release
         if: steps.release.outputs.channel != 'edge'
-        # Created with RELEASE_TOKEN rather than GITHUB_TOKEN, so that it
+        # Created with DISPATCH_TOKEN rather than GITHUB_TOKEN, so that it
         # starts the Deploy workflow, which publishes the app to
         # homeassistant-apps (stable) and homeassistant-apps-beta
         env:
-          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          GH_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
           CHANNEL: ${{ steps.release.outputs.channel }}
           COMMIT: ${{ steps.pin.outputs.commit }}
           TAG: ${{ steps.release.outputs.tag }}
