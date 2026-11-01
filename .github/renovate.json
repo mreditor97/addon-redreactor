@@ -73,6 +73,11 @@
       "matchDatasources": ["repology"],
       "automerge": true,
       "matchPackageNames": ["/^alpine_.*/docker.*$/"]
+    },
+    {
+      "description": "The edge pin is updated by the redreactor master build",
+      "matchFileNames": ["redreactor/requirements-edge.txt"],
+      "enabled": false
     }
   ]
 }

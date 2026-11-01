@@ -5,20 +5,28 @@ FROM ${BUILD_FROM}
 # Set Shell
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Copy Python requirements file
-COPY requirements.txt /tmp/
+# Copy Python requirements files
+COPY requirements.txt requirements-edge.txt /tmp/
 
 # Setup Base
 ARG BUILD_ARCH=aarch64
+ARG BUILD_VERSION
 ARG HA_CLI_VERSION="5.6.0"
 
+# Edge builds (versioned by a 7 character commit hash) install the latest
+# redreactor alpha, everything else installs the stable release
 RUN \
-    apk add --no-cache --virtual .build-dependencies \
+    requirements="/tmp/requirements.txt" \
+    && if [[ "${BUILD_VERSION:-}" =~ ^[0-9a-f]{7}$ ]]; then \
+        requirements="/tmp/requirements-edge.txt"; \
+    fi \
+    \
+    && apk add --no-cache --virtual .build-dependencies \
         gcc=14.2.0-r6 \
         musl-dev=1.2.5-r13 \
         linux-headers=6.14.2-r0 \
     \
-    && pip3 install --no-cache-dir -r /tmp/requirements.txt \
+    && pip3 install --no-cache-dir -r "${requirements}" \
     \
     && curl -fsSL -o /usr/bin/ha \
         "https://github.com/home-assistant/cli/releases/download/${HA_CLI_VERSION}/ha_${BUILD_ARCH}" \

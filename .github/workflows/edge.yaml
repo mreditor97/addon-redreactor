@@ -1,0 +1,66 @@
+---
+name: Edge
+
+# yamllint disable-line rule:truthy
+on:
+  # Sent by the redreactor release workflow after it publishes an alpha
+  repository_dispatch:
+    types:
+      - redreactor-edge
+
+concurrency:
+  group: edge
+
+permissions: {}
+
+jobs:
+  update:
+    name: Update the redreactor alpha
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: write
+    steps:
+      - name: ℹ️ Check the requested version
+        id: version
+        env:
+          VERSION: ${{ github.event.client_payload.version }}
+        run: |
+          if [[ ! "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+a[0-9]+$ ]]; then
+            echo "::error ::Not a redreactor alpha version: ${VERSION}"
+            exit 1
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+      - name: ⤵️ Check out code from GitHub
+        # actions/checkout v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: master
+      - name: 🏗 Pin the edge app to the alpha
+        id: pin
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          COMMIT: ${{ github.event.client_payload.commit }}
+        run: |
+          echo "redreactor==${VERSION}" > redreactor/requirements-edge.txt
+          if git diff --quiet; then
+            echo "Already on redreactor ${VERSION}"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit --file - redreactor/requirements-edge.txt <<MESSAGE
+          Update the edge app to redreactor ${VERSION}
+
+          https://github.com/${GITHUB_REPOSITORY_OWNER}/redreactor/commit/${COMMIT:0:40}
+          MESSAGE
+          git push origin HEAD:master
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: 🚀 Build and publish the edge app
+        if: steps.pin.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run deploy.yaml --repo "${GITHUB_REPOSITORY}" --ref master

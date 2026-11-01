@@ -9,6 +9,9 @@ on:
   release:
     types:
       - published
+  # Started by the Edge workflow after it updates the redreactor alpha, as
+  # its commit does not trigger a push run
+  workflow_dispatch:
 
 permissions: {}
 
