@@ -86,11 +86,10 @@ jobs:
             git config user.name "github-actions[bot]"
             git config user.email \
               "41898282+github-actions[bot]@users.noreply.github.com"
-            git commit --file - "${file}" <<MESSAGE
-          Update the ${CHANNEL} app to redreactor ${TAG}
-
-          ${releases}/tag/${TAG}
-          MESSAGE
+            # A subject line only: the edge changelog lists each commit's
+            # whole message
+            git commit -m "Update the ${CHANNEL} app to redreactor ${TAG}" \
+              "${file}"
             # The token is only used for this push, not kept in the checkout
             git push \
               "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
