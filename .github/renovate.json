@@ -73,6 +73,14 @@
       "matchDatasources": ["repology"],
       "automerge": true,
       "matchPackageNames": ["/^alpine_.*/docker.*$/"]
+    },
+    {
+      "description": "The beta and edge pins are updated by redreactor builds",
+      "matchFileNames": [
+        "redreactor/requirements-beta.txt",
+        "redreactor/requirements-edge.txt"
+      ],
+      "enabled": false
     }
   ]
 }
