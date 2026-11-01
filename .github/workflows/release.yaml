@@ -20,7 +20,6 @@ jobs:
     name: Update the ${{ github.event.client_payload.channel }} app
     runs-on: ubuntu-latest
     permissions:
-      actions: write
       contents: write
       # Read by Release Drafter to list the changes
       pull-requests: read
@@ -68,7 +67,10 @@ jobs:
           CHANNEL: ${{ steps.release.outputs.channel }}
           TAG: ${{ steps.release.outputs.tag }}
           WHEEL: ${{ steps.release.outputs.wheel }}
-          GH_TOKEN: ${{ github.token }}
+          # Pushed with DISPATCH_TOKEN rather than GITHUB_TOKEN: its owner can
+          # bypass the pull request rule on master, and the push starts the
+          # Deploy workflow, which builds the edge app from the newest commit
+          GH_TOKEN: ${{ secrets.DISPATCH_TOKEN }}
         run: |
           releases="https://github.com/${GITHUB_REPOSITORY_OWNER}/redreactor/releases"
           if [[ "${CHANNEL}" = "stable" ]]; then
@@ -80,7 +82,6 @@ jobs:
             file="redreactor/requirements-${CHANNEL}.txt"
             echo "redreactor @ ${releases}/download/${TAG}/${WHEEL}" > "${file}"
           fi
-          changed=false
           if ! git diff --quiet; then
             git config user.name "github-actions[bot]"
             git config user.email \
@@ -94,19 +95,8 @@ jobs:
             git push \
               "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
               HEAD:master
-            changed=true
           fi
-          echo "changed=${changed}" >> "$GITHUB_OUTPUT"
           echo "commit=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
-
-      # Edge: the newest commit on master is the edge version, so build it
-      - name: 🚀 Build and publish the edge app
-        if: |
-          steps.release.outputs.channel == 'edge'
-          && steps.pin.outputs.changed == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run deploy.yaml --repo "${GITHUB_REPOSITORY}" --ref master
 
       # Stable and beta: an app release is the version, so create one
       - name: ℹ️ Work out the next app version

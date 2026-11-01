@@ -9,8 +9,7 @@ on:
   release:
     types:
       - published
-  # Started by the Release workflow after it updates the redreactor alpha, as
-  # its commit does not trigger a push run
+  # To rebuild the edge app by hand
   workflow_dispatch:
 
 permissions: {}
