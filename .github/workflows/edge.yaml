@@ -36,11 +36,13 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: master
+          persist-credentials: false
       - name: 🏗 Pin the edge app to the alpha
         id: pin
         env:
           VERSION: ${{ steps.version.outputs.version }}
           COMMIT: ${{ github.event.client_payload.commit }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           echo "redreactor==${VERSION}" > redreactor/requirements-edge.txt
           if git diff --quiet; then
@@ -57,7 +59,10 @@ jobs:
 
           https://github.com/${GITHUB_REPOSITORY_OWNER}/redreactor/commit/${COMMIT:0:40}
           MESSAGE
-          git push origin HEAD:master
+          # The token is only used for this push, not kept in the checkout
+          git push \
+            "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" \
+            HEAD:master
           echo "changed=true" >> "$GITHUB_OUTPUT"
       - name: 🚀 Build and publish the edge app
         if: steps.pin.outputs.changed == 'true'
