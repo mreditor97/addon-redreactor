@@ -153,6 +153,6 @@ jobs:
           gh release create "${VERSION}" \
             --repo "${GITHUB_REPOSITORY}" \
             --target "${COMMIT}" \
-            --title "${VERSION}" \
+            --title "v${VERSION}" \
             --notes "Uses redreactor ${TAG}." \
             "${flags[@]}"
