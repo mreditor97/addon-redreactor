@@ -3,9 +3,9 @@ name: Redreactor
 
 # yamllint disable-line rule:truthy
 on:
-  # Sent by the redreactor release workflow with a new alpha (edge, after CI
-  # passes on master) or beta (after a pre-release is published), whose wheel
-  # is attached to a redreactor GitHub pre-release
+  # Sent by the redreactor release workflow with a new stable release (once
+  # it is on PyPI), beta (after a pre-release is published) or alpha (edge,
+  # after CI passes on master)
   repository_dispatch:
     types:
       - redreactor-release
@@ -30,8 +30,13 @@ jobs:
           TAG: ${{ github.event.client_payload.tag }}
           WHEEL: ${{ github.event.client_payload.wheel }}
         run: |
-          if [[ "${CHANNEL}" != "edge" && "${CHANNEL}" != "beta" ]]; then
+          if [[ ! "${CHANNEL}" =~ ^(stable|beta|edge)$ ]]; then
             echo "::error ::Not an app channel: ${CHANNEL}"
+            exit 1
+          fi
+          if [[ "${CHANNEL}" = "stable" ]] \
+            && [[ ! "${TAG}" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error ::Not a stable redreactor release tag: ${TAG}"
             exit 1
           fi
           if [[ ! "${TAG}" =~ ^v?[0-9]+\.[0-9]+\.[0-9]+[0-9A-Za-z.-]*$ ]]; then
@@ -64,8 +69,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           releases="https://github.com/${GITHUB_REPOSITORY_OWNER}/redreactor/releases"
-          file="redreactor/requirements-${CHANNEL}.txt"
-          echo "redreactor @ ${releases}/download/${TAG}/${WHEEL}" > "${file}"
+          if [[ "${CHANNEL}" = "stable" ]]; then
+            # Stable installs the release from PyPI
+            file="redreactor/requirements.txt"
+            echo "redreactor==${TAG#v}" > "${file}"
+          else
+            # Beta and edge install the wheel attached to the GitHub release
+            file="redreactor/requirements-${CHANNEL}.txt"
+            echo "redreactor @ ${releases}/download/${TAG}/${WHEEL}" > "${file}"
+          fi
           changed=false
           if ! git diff --quiet; then
             git config user.name "github-actions[bot]"
@@ -94,13 +106,16 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run deploy.yaml --repo "${GITHUB_REPOSITORY}" --ref master
 
-      # Beta: an app pre-release is the beta version, so create one
-      - name: ℹ️ Work out the next app beta version
+      # Stable and beta: an app release is the version, so create one
+      - name: ℹ️ Work out the next app version
         id: version
-        if: steps.release.outputs.channel == 'beta'
+        if: steps.release.outputs.channel != 'edge'
+        env:
+          CHANNEL: ${{ steps.release.outputs.channel }}
         run: |
-          # The next patch after the latest stable app release, then the next
-          # free beta number, e.g. 0.1.6 -> 0.1.7-beta.0, 0.1.7-beta.1, ...
+          # The next patch after the latest stable app release, e.g. 0.1.6 ->
+          # 0.1.7, and for beta the next free beta number of it, e.g.
+          # 0.1.7-beta.0, 0.1.7-beta.1, ...
           latest=$(git tag --list \
             | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' \
             | sed 's/^v//' \
@@ -109,26 +124,35 @@ jobs:
           latest="${latest:-0.0.0}"
           IFS=. read -r major minor patch <<< "${latest}"
           base="${major}.${minor}.$((patch + 1))"
+          if [[ "${CHANNEL}" = "stable" ]]; then
+            echo "version=${base}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
           number=0
           while git rev-parse -q --verify "refs/tags/${base}-beta.${number}" \
             > /dev/null; do
             number=$((number + 1))
           done
           echo "version=${base}-beta.${number}" >> "$GITHUB_OUTPUT"
-      - name: 🚀 Publish the beta app pre-release
-        if: steps.release.outputs.channel == 'beta'
+      - name: 🚀 Publish the app release
+        if: steps.release.outputs.channel != 'edge'
         # Created with RELEASE_TOKEN rather than GITHUB_TOKEN, so that it
         # starts the Deploy workflow, which publishes the app to
-        # homeassistant-apps-beta
+        # homeassistant-apps (stable) and homeassistant-apps-beta
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          CHANNEL: ${{ steps.release.outputs.channel }}
           COMMIT: ${{ steps.pin.outputs.commit }}
           TAG: ${{ steps.release.outputs.tag }}
           VERSION: ${{ steps.version.outputs.version }}
         run: |
+          flags=(--generate-notes)
+          if [[ "${CHANNEL}" = "beta" ]]; then
+            flags+=(--prerelease)
+          fi
           gh release create "${VERSION}" \
             --repo "${GITHUB_REPOSITORY}" \
             --target "${COMMIT}" \
-            --prerelease \
             --title "${VERSION}" \
-            --notes "Beta of the app with redreactor ${TAG}."
+            --notes "Uses redreactor ${TAG}." \
+            "${flags[@]}"
