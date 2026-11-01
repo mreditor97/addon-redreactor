@@ -8,7 +8,11 @@ configuration:
     description: Configure the device name, incase you have multiple Red Reactors on the same MQTT server
   homeassistant:
     name: Home Assistant
-    description: Home Assistant MQTT Discovery configuration
+    description: >-
+      Home Assistant MQTT Discovery configuration. `status_topic` and
+      `status_online` set the birth message (default `homeassistant/status`
+      and `online`) that makes Red Reactor resend its discovery and latest
+      readings after Home Assistant restarts
   ina:
     name: Red Reactor sensor
     description: >-

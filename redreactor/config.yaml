@@ -55,6 +55,8 @@ schema:
     discovery: bool?
     discovery_interval: int(1,)
     expire_after: int(0,)
+    status_topic: match(^[^+#]+$)?
+    status_online: str?
   ina:
     address: int(3,119)?
     monitor_interval: int(1,60)?
