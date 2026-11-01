@@ -45,6 +45,10 @@ homeassistant:
 ina:
   address: 64 # I2C address of the Red Reactor, 64 is 0x40, from 3 to 119 (optional)
   monitor_interval: 5 # Seconds between battery readings, 1 to 60 (optional)
+battery:
+  internal_resistance: 35 # Battery internal resistance in mΩ, 0 turns it off (optional)
+  average_readings: 6 # Readings averaged for the battery level, 1 to 100, 1 turns it off (optional)
+  curve: [] # Resting voltage to battery level points, empty uses a straight line
 system:
   shutdown: ha host shutdown # Shutdown (if using HASS OS, this doesn't need changing)
   restart: ha host restart # Restart (if using HASS OS, this doesn't need changing)
@@ -58,6 +62,30 @@ If you use the Mosquitto broker app, leave `broker`, `user` and `password` empty
 If the broker can't be reached, the app keeps retrying rather than stopping.
 
 Certificates for TLS go in the Home Assistant `/ssl` folder, which the app can read. Use port `8883` (or whatever your broker uses for TLS) with `tls.enabled: true`.
+
+### Battery level
+
+By default the battery level is a straight line from the battery voltage minimum (0%) to the maximum (100%). A Li-ion battery's voltage doesn't fall evenly as it discharges, and it sags under load, so the `battery` options improve it:
+
+- `internal_resistance` adds back the voltage sag under load (current × resistance) before working out the level. The default of 35 mΩ is a datasheet figure; your measured value is usually higher.
+- `average_readings` smooths out brief current spikes by averaging the last few readings.
+- `curve` maps the battery's resting voltage to its level. Give at least 2 points with rising voltages and levels that don't fall. The level is interpolated between them, and when a curve is set the battery voltage minimum and maximum no longer affect the level.
+
+```yaml
+battery:
+  internal_resistance: 35 # mΩ, your measured value
+  average_readings: 6
+  curve:
+    - voltage: 3.00
+      level: 0
+    - voltage: 3.45
+      level: 10
+    # ... the points measured for your battery
+    - voltage: 4.15
+      level: 100
+```
+
+The values above are placeholders, not a real battery's curve. The [Red Reactor README](https://github.com/mreditor97/redreactor#battery-level) explains how to measure the internal resistance and your battery's curve.
 
 Other configuration options are available from within the Home Assistant Device configuration page:
 

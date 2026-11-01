@@ -15,6 +15,14 @@ configuration:
       I2C address of the Red Reactor's INA219 (default 64, which is 0x40) and
       how often in seconds it is read (default 5). Only change these if you
       know you need to
+  battery:
+    name: Battery
+    description: >-
+      Battery internal resistance in milliohms (default 35, 0 turns it off),
+      how many readings are averaged for the battery level (default 6, 1 turns
+      it off), and an optional voltage curve of resting voltage and level %
+      points with rising voltages. When a curve is set, the battery voltage
+      minimum and maximum no longer affect the level
   system:
     name: System Configuration
     description: The command required to Shutdown or Restart the system

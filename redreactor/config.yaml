@@ -27,6 +27,8 @@ options:
     discovery_interval: 120
     expire_after: 120
   ina: {}
+  battery:
+    curve: []
   system:
     shutdown: ha host shutdown
     restart: ha host restart
@@ -56,6 +58,12 @@ schema:
   ina:
     address: int(3,119)?
     monitor_interval: int(1,60)?
+  battery:
+    internal_resistance: float(0,)?
+    average_readings: int(1,100)?
+    curve:
+      - voltage: float
+        level: float(0,100)
   system:
     shutdown: str
     restart: str
