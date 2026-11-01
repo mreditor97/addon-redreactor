@@ -17,11 +17,7 @@ hassio_role: manager
 services:
   - mqtt:want
 options:
-  mqtt:
-    broker: core-mosquitto
-    port: 1883
-    user: redreactor
-    password: redreactor
+  mqtt: {}
   hostname:
     name: redreactor-pi
     pretty: Raspberry Pi
@@ -36,10 +32,11 @@ options:
     file: WARNING
 schema:
   mqtt:
-    broker: str
-    port: port
-    user: str
-    password: password
+    broker: str?
+    port: port?
+    user: str?
+    password: password?
+    client_id: str?
   hostname:
     name: str
     pretty: str

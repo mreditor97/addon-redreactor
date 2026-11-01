@@ -24,10 +24,11 @@ App configuration:
 
 ```yaml
 mqtt:
-  broker: core-mosquitto # IP Address of your MQTT Broker
-  port: 1883 # Port of your MQTT Broker
-  user: redreactor # Username for your MQTT Broker
-  password: redreactor # Password for your MQTT Broker
+  broker: core-mosquitto # IP Address of your MQTT Broker (optional)
+  port: 1883 # Port of your MQTT Broker (optional)
+  user: redreactor # Username for your MQTT Broker (optional)
+  password: redreactor # Password for your MQTT Broker (optional)
+  client_id: redreactor-pi # MQTT client ID, must be unique on the broker (optional)
 hostname:
   name: redreactor-pi # Hostname (used as a MQTT topic identifier)
   pretty: Raspberry Pi # Pretty Display Name
@@ -41,6 +42,10 @@ logging:
   console: INFO
   file: WARNING
 ```
+
+If you use the Mosquitto broker app, leave `broker`, `user` and `password` empty: the app picks up the broker address and credentials from the Supervisor. Anything you set yourself is used instead.
+
+If the broker can't be reached, the app keeps retrying rather than stopping.
 
 Other configuration options are available from within the Home Assistant Device configuration page. Including the ability to change the `report_interval` to Home Assistant.
 
