@@ -41,10 +41,12 @@ jobs:
         id: pin
         env:
           VERSION: ${{ steps.version.outputs.version }}
-          COMMIT: ${{ github.event.client_payload.commit }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          echo "redreactor==${VERSION}" > redreactor/requirements-edge.txt
+          # The wheel attached to the redreactor pre-release for this alpha
+          release="https://github.com/${GITHUB_REPOSITORY_OWNER}/redreactor/releases/tag/${VERSION}"
+          wheel="https://github.com/${GITHUB_REPOSITORY_OWNER}/redreactor/releases/download/${VERSION}/redreactor-${VERSION}-py3-none-any.whl"
+          echo "redreactor @ ${wheel}" > redreactor/requirements-edge.txt
           if git diff --quiet; then
             echo "Already on redreactor ${VERSION}"
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -57,7 +59,7 @@ jobs:
           git commit --file - redreactor/requirements-edge.txt <<MESSAGE
           Update the edge app to redreactor ${VERSION}
 
-          https://github.com/${GITHUB_REPOSITORY_OWNER}/redreactor/commit/${COMMIT:0:40}
+          ${release}
           MESSAGE
           # The token is only used for this push, not kept in the checkout
           git push \
