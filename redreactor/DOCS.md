@@ -48,7 +48,12 @@ ina:
 battery:
   internal_resistance: 35 # Battery internal resistance in mΩ, 0 turns it off (optional)
   average_readings: 6 # Readings averaged for the battery level, 1 to 100, 1 turns it off (optional)
-  curve: [] # Resting voltage to battery level points, empty uses a straight line
+  curve: # Resting voltage to battery level points, defaults to the Samsung 35E, empty uses a straight line
+    - voltage: 2.80
+      level: 0
+    # ...
+    - voltage: 4.16
+      level: 100
 system:
   shutdown: ha host shutdown # Shutdown (if using HASS OS, this doesn't need changing)
   restart: ha host restart # Restart (if using HASS OS, this doesn't need changing)
@@ -85,7 +90,9 @@ battery:
       level: 100
 ```
 
-The values above are placeholders, not a real battery's curve. The [Red Reactor README](https://github.com/mreditor97/redreactor#battery-level) explains how to measure the internal resistance and your battery's curve.
+The values above are placeholders, not a real battery's curve.
+
+The default curve is for the Samsung INR18650-35E, read off the 0.2 A discharge trace in the [lygte-info.dk review](https://lygte-info.dk/review/batteries2012/Samsung%20INR18650-35E%203500mAh%20%28Pink%29%20UK.html), with the level as the share of the 3.40 Ah the cell gave down to 2.8 V. The points are read off a chart, so they are approximate. For a different battery, replace the curve with your own, or clear it to use a straight line between the battery voltage minimum and maximum. The [Red Reactor README](https://github.com/mreditor97/redreactor#battery-level) explains how to measure the internal resistance and your battery's curve.
 
 Other configuration options are available from within the Home Assistant Device configuration page:
 
