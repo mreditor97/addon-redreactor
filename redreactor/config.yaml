@@ -28,36 +28,7 @@ options:
     expire_after: 120
   ina: {}
   battery:
-    # Samsung INR18650-35E at 0.2A, read off the lygte-info.dk discharge chart
-    curve:
-      - voltage: 2.80
-        level: 0
-      - voltage: 3.08
-        level: 5
-      - voltage: 3.25
-        level: 10
-      - voltage: 3.39
-        level: 15
-      - voltage: 3.44
-        level: 20
-      - voltage: 3.55
-        level: 30
-      - voltage: 3.63
-        level: 40
-      - voltage: 3.71
-        level: 50
-      - voltage: 3.80
-        level: 60
-      - voltage: 3.89
-        level: 70
-      - voltage: 3.99
-        level: 80
-      - voltage: 4.06
-        level: 90
-      - voltage: 4.08
-        level: 95
-      - voltage: 4.16
-        level: 100
+    curve: []
   system:
     shutdown: ha host shutdown
     restart: ha host restart

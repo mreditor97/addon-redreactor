@@ -48,12 +48,7 @@ ina:
 battery:
   internal_resistance: 35 # Battery internal resistance in mΩ, 0 turns it off (optional)
   average_readings: 6 # Readings averaged for the battery level, 1 to 100, 1 turns it off (optional)
-  curve: # Resting voltage to battery level points, defaults to the Samsung 35E, empty uses a straight line
-    - voltage: 2.80
-      level: 0
-    # ...
-    - voltage: 4.16
-      level: 100
+  curve: [] # Resting voltage to battery level points, empty uses a straight line
 system:
   shutdown: ha host shutdown # Shutdown (if using HASS OS, this doesn't need changing)
   restart: ha host restart # Restart (if using HASS OS, this doesn't need changing)
@@ -76,23 +71,44 @@ By default the battery level is a straight line from the battery voltage minimum
 - `average_readings` smooths out brief current spikes by averaging the last few readings.
 - `curve` maps the battery's resting voltage to its level. Give at least 2 points with rising voltages and levels that don't fall. The level is interpolated between them, and when a curve is set the battery voltage minimum and maximum no longer affect the level.
 
+For example, for a Samsung INR18650-35E:
+
 ```yaml
 battery:
   internal_resistance: 35 # mΩ, your measured value
   average_readings: 6
   curve:
-    - voltage: 3.00
+    - voltage: 2.80
       level: 0
-    - voltage: 3.45
+    - voltage: 3.08
+      level: 5
+    - voltage: 3.25
       level: 10
-    # ... the points measured for your battery
-    - voltage: 4.15
+    - voltage: 3.39
+      level: 15
+    - voltage: 3.44
+      level: 20
+    - voltage: 3.55
+      level: 30
+    - voltage: 3.63
+      level: 40
+    - voltage: 3.71
+      level: 50
+    - voltage: 3.80
+      level: 60
+    - voltage: 3.89
+      level: 70
+    - voltage: 3.99
+      level: 80
+    - voltage: 4.06
+      level: 90
+    - voltage: 4.08
+      level: 95
+    - voltage: 4.16
       level: 100
 ```
 
-The values above are placeholders, not a real battery's curve.
-
-The default curve is for the Samsung INR18650-35E, read off the 0.2 A discharge trace in the [lygte-info.dk review](https://lygte-info.dk/review/batteries2012/Samsung%20INR18650-35E%203500mAh%20%28Pink%29%20UK.html), with the level as the share of the 3.40 Ah the cell gave down to 2.8 V. The points are read off a chart, so they are approximate. For a different battery, replace the curve with your own, or clear it to use a straight line between the battery voltage minimum and maximum. The [Red Reactor README](https://github.com/mreditor97/redreactor#battery-level) explains how to measure the internal resistance and your battery's curve.
+This curve was read off the 0.2 A discharge trace in the [lygte-info.dk review of the Samsung INR18650-35E](https://lygte-info.dk/review/batteries2012/Samsung%20INR18650-35E%203500mAh%20%28Pink%29%20UK.html), with the level as the share of the 3.40 Ah the cell gave down to 2.8 V. It was read off a chart, so the voltages are approximate (about ±0.01 V), and your own cells will differ a little with age and temperature. The curve isn't used unless you set it. The [Red Reactor README](https://github.com/mreditor97/redreactor#battery-level) explains how to measure the internal resistance and your own battery's curve.
 
 Other configuration options are available from within the Home Assistant Device configuration page:
 

@@ -113,8 +113,8 @@ configuration:
         name: Voltage curve
         description: >-
           Resting voltage and battery level % points, at least 2 with rising
-          voltages. Defaults to the Samsung INR18650-35E. Leave empty for a
-          straight line between the battery voltage minimum and maximum
+          voltages. Leave empty for a straight line between the battery voltage
+          minimum and maximum
   system:
     name: System Configuration
     description: The command required to Shutdown or Restart the system
