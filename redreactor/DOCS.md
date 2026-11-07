@@ -40,7 +40,7 @@ hostname:
   pretty: Raspberry Pi # Pretty Display Name
 homeassistant:
   discovery: true # Create the Red Reactor device in Home Assistant (optional)
-  discovery_interval: 120 # Home Assistant Configuration discovery push interval (seconds, 1 or more)
+  discovery_interval: 120 # Home Assistant Configuration discovery push interval (seconds, 1 to 86400)
   expire_after: 120 # Home Assistant MQTT Data expiry time (seconds, 0 or more)
 ina:
   address: 64 # I2C address of the Red Reactor, 64 is 0x40, from 3 to 119 (optional)

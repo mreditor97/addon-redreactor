@@ -72,7 +72,7 @@ configuration:
         name: Discovery interval
         description: >-
           How often in seconds the Home Assistant MQTT Discovery configuration
-          is published (1 or more)
+          is published (1 to 86400)
       expire_after:
         name: Expire after
         description: >-
