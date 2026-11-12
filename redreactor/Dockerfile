@@ -15,7 +15,10 @@ ARG HA_CLI_VERSION="5.6.0"
 
 # Edge builds (versioned by a 7 character commit hash) install the latest
 # redreactor alpha, beta builds (versioned X.Y.Z-something) the latest
-# redreactor beta, and everything else the stable release
+# redreactor beta, and everything else the stable release.
+# No compiler is installed: redreactor reads the INA219 with smbus2, which is
+# pure Python. Releases before smbus2 (0.1.8 and older) need spidev compiled,
+# so they no longer build here.
 RUN \
     requirements="/tmp/requirements.txt" \
     && if [[ "${BUILD_VERSION:-}" =~ ^[0-9a-f]{7}$ ]]; then \
@@ -24,11 +27,6 @@ RUN \
         requirements="/tmp/requirements-beta.txt"; \
     fi \
     \
-    && apk add --no-cache --virtual .build-dependencies \
-        gcc=14.2.0-r6 \
-        musl-dev=1.2.5-r13 \
-        linux-headers=6.14.2-r0 \
-    \
     && pip3 install --no-cache-dir -r "${requirements}" \
     \
     && curl -fsSL -o /usr/bin/ha \
@@ -36,7 +34,6 @@ RUN \
     \
     && chmod a+x /usr/bin/ha \
     \
-    && apk del --no-cache --purge .build-dependencies \
     && rm -fr \
         /tmp/*
 

@@ -72,12 +72,15 @@ configuration:
         name: Discovery interval
         description: >-
           How often in seconds the Home Assistant MQTT Discovery configuration
-          is published (1 to 86400)
+          is published (1 to 86400, or 0 to only publish it on connect and
+          when Home Assistant restarts)
       expire_after:
         name: Expire after
         description: >-
           Seconds after which Home Assistant marks the sensors as unavailable
-          if no new data arrives (0 or more)
+          if no new data arrives (0 turns it off). Raised to at least twice
+          the report interval plus 30 seconds, so a long report interval
+          doesn't leave them unavailable between reports
       status_topic:
         name: Birth message topic
         description: >-
@@ -101,7 +104,14 @@ configuration:
           I2C address of the INA219, from 3 to 119 (default 64, which is 0x40)
       monitor_interval:
         name: Monitor interval
-        description: Seconds between battery readings, from 1 to 60 (default 5)
+        description: >-
+          Seconds between battery readings, from 1 to 60 (default 5). Can
+          also be changed from the device page, which then takes over
+      adc_samples:
+        name: Samples per reading
+        description: >-
+          How many samples the INA219 averages for each reading (default 1).
+          More samples give steadier readings
   battery:
     name: Battery
     description: >-
@@ -118,7 +128,14 @@ configuration:
         name: Average readings
         description: >-
           How many readings are averaged for the battery level, from 1 to 100
-          (default 6, 1 turns it off)
+          (default 6, 1 turns it off). Can also be changed from the device
+          page, which then takes over
+      report_level_change:
+        name: Report level change
+        description: >-
+          Battery level change, in percentage points, that is reported
+          straight away rather than at the next report interval (default 5,
+          0 turns it off)
       curve:
         name: Voltage curve
         description: >-

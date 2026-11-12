@@ -1,0 +1,53 @@
+---
+name: Red Reactor
+
+# yamllint disable-line rule:truthy
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    name: Install ${{ matrix.requirements }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The stable, beta and edge apps each install their own pin
+        requirements:
+          - requirements.txt
+          - requirements-beta.txt
+          - requirements-edge.txt
+    steps:
+      - name: ⤵️ Check out code from GitHub
+        # actions/checkout v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          # Nothing is pushed, so the token isn't kept in the checkout
+          persist-credentials: false
+      - name: 🏗 Set up uv
+        # astral-sh/setup-uv v10.3.3
+        uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2
+      - name: 🏗 Install the pinned redreactor
+        # On the Python of the app's base image
+        run: |
+          uv venv --python 3.15 "${RUNNER_TEMP}/venv"
+          uv pip install --python "${RUNNER_TEMP}/venv" \
+            -r "redreactor/${{ matrix.requirements }}" pyyaml
+      - name: 🚀 Check the service starts
+        # Without a Red Reactor or a broker it can't run, but this imports
+        # every module and parses the command line
+        run: '"${RUNNER_TEMP}/venv/bin/python" -m redreactor --help'
+      - name: 🚀 Check the options schema against the service
+        # Only for the edge pin, the newest service, which the schema follows.
+        # The stable and beta pins may lag behind an option that is new
+        if: matrix.requirements == 'requirements-edge.txt'
+        run: |
+          "${RUNNER_TEMP}/venv/bin/python" .github/scripts/check_options.py \
+            redreactor/config.yaml

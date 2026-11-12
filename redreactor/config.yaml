@@ -53,16 +53,18 @@ schema:
     pretty: match(^.*\S.*$)
   homeassistant:
     discovery: bool?
-    discovery_interval: int(1,86400)
+    discovery_interval: int(0,86400)
     expire_after: int(0,)
     status_topic: match(^[^+#]+$)?
     status_online: match(^.+$)?
   ina:
     address: int(3,119)?
     monitor_interval: int(1,60)?
+    adc_samples: list(1|2|4|8|16|32|64|128)?
   battery:
     internal_resistance: float(0,)?
     average_readings: int(1,100)?
+    report_level_change: int(0,100)?
     curve:
       - voltage: float
         level: float(0,100)

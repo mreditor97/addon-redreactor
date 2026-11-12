@@ -40,16 +40,18 @@ hostname:
   pretty: Raspberry Pi # Pretty Display Name
 homeassistant:
   discovery: true # Create the Red Reactor device in Home Assistant (optional)
-  discovery_interval: 120 # Home Assistant Configuration discovery push interval (seconds, 1 to 86400)
-  expire_after: 120 # Home Assistant MQTT Data expiry time (seconds, 0 or more)
+  discovery_interval: 120 # Home Assistant Configuration discovery push interval (seconds, 1 to 86400, 0 for only on connect)
+  expire_after: 120 # Home Assistant MQTT Data expiry time (seconds, 0 turns it off, see below)
   status_topic: homeassistant/status # Home Assistant birth message topic, resends data when it restarts (optional)
   status_online: online # Home Assistant birth message payload (optional)
 ina:
   address: 64 # I2C address of the Red Reactor, 64 is 0x40, from 3 to 119 (optional)
   monitor_interval: 5 # Seconds between battery readings, 1 to 60 (optional)
+  adc_samples: 1 # Samples the INA219 averages for each reading, 1 to 128 (optional)
 battery:
   internal_resistance: 35 # Battery internal resistance in mΩ, 0 turns it off (optional)
   average_readings: 6 # Readings averaged for the battery level, 1 to 100, 1 turns it off (optional)
+  report_level_change: 5 # Level change in points reported straight away, 0 turns it off (optional)
   curve: [] # Resting voltage to battery level points, empty uses a straight line
 system:
   shutdown: ha host shutdown # Shutdown (if using HASS OS, this doesn't need changing)
@@ -62,6 +64,10 @@ logging:
 If you use the Mosquitto broker app, leave `broker`, `user` and `password` empty: the app picks up the broker address and credentials from the Supervisor. Anything you set yourself is used instead.
 
 If the broker can't be reached, the app keeps retrying rather than stopping.
+
+`expire_after` is raised to at least twice the report interval plus 30 seconds, so a report interval set longer from the device page doesn't leave the sensors unavailable between reports. `0` turns expiry off.
+
+`adc_samples` is `1`, `2`, `4`, `8`, `16`, `32`, `64` or `128`. More samples give steadier readings at no CPU cost; 128 takes about 68 ms per reading.
 
 Certificates for TLS go in the Home Assistant `/ssl` folder, which the app can read. Use port `8883` (or whatever your broker uses for TLS) with `tls.enabled: true`.
 
@@ -116,8 +122,15 @@ Other configuration options are available from within the Home Assistant Device 
 
 - **Battery shutdown level**: when the battery drops to this percentage while running on battery, the Red Reactor safely shuts down Home Assistant. If Home Assistant starts up below this level while the battery is charging, it stays on.
 - **Report interval**, and the battery voltage minimum and maximum used to work out the battery level.
+- **Monitor interval** and **Readings averaged**. These start at the `ina.monitor_interval` and `battery.average_readings` app options. Once changed on the device page that value is used, until it is set back to the app option's value.
+- **Shutdown confirmation readings**: how many readings in a row must be at or below the shutdown level before the shutdown starts (default 3).
+- **Refresh**: takes a reading and reports it straight away.
 
-The device also shows the power drawn from the battery, and whether it is charging.
+The device also shows the power drawn from the battery, and whether it is charging. **Sensor problem** turns on when the Red Reactor can't be read 3 times in a row, and the battery readings show as unknown until it can be read again. **Last shutdown**, **Last shutdown time** and **Last shutdown voltage** show why the app last shut down or restarted the system (low battery, or the Shutdown or Restart button).
+
+The battery level is also reported straight away when it moves by `battery.report_level_change` percentage points (default 5), and when charging starts or stops.
+
+Only the first I2C bus (`/dev/i2c-1`) is passed to the app, which is the one the Red Reactor uses on a Raspberry Pi.
 
 ## OS Specific I2C configuration
 
