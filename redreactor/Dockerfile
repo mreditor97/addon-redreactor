@@ -11,7 +11,7 @@ COPY requirements.txt requirements-beta.txt requirements-edge.txt /tmp/
 # Setup Base
 ARG BUILD_ARCH=aarch64
 ARG BUILD_VERSION
-ARG HA_CLI_VERSION="5.6.0"
+ARG HA_CLI_VERSION="5.7.0"
 
 # Edge builds (versioned by a 7 character commit hash) install the latest
 # redreactor alpha, beta builds (versioned X.Y.Z-something) the latest
